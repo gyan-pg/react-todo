@@ -1,6 +1,5 @@
 // rafceと打つと雛形を作成できる。
 import React, { useState } from 'react';
-import firebase from "firebase/app";
 import { ListItem, TextField, Grid } from "@material-ui/core";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import EditOutlined from '@material-ui/icons/EditOutlined';

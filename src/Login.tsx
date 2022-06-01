@@ -8,14 +8,17 @@ const Login: React.FC = (props: any) => {
   const[email, setEmail] = useState("");
   const[password, setPassword] = useState("");
 
+  console.log('props login',props);
+
   useEffect(() => {
     // 認証関係の変更に際して呼び出される。
     // ログイン成功時にuserにユーザー情報が入ってくる。
-    auth.onAuthStateChanged((user) => {
+    const unSub = auth.onAuthStateChanged((user) => {
       // userが存在する場合はApp画面に遷移の意
       // &&は左側がtrueなら右側の処理を返す→このケースではページ移動をする。
       user && props.history.push("/");
     });
+    return () => unSub();
   },[props.history]);
 
   return (

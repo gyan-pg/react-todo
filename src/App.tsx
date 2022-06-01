@@ -5,6 +5,8 @@ import { db } from "./firebase"
 import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
 import TaskItem from "./TaskItem";
 import { makeStyles } from "@material-ui/styles";
+import { auth } from "./firebase";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const useStyles = makeStyles({
   field: {
@@ -18,11 +20,21 @@ const useStyles = makeStyles({
 });
 
 
-const App: React.FC = () => {
+const App: React.FC = (props: any) => {
   
   const [tasks, setTasks] = useState([{ id:"", title:"" }]);
   const [input, setInput] = useState("");
   const classes = useStyles();
+
+  console.log('props app',props);
+
+  useEffect(() => {
+    // ログインしていなかったら、loginページに遷移する処理
+    const unSub = auth.onAuthStateChanged((user) => (
+      !user && props.history.push("/login")
+    ));
+    return () => unSub();
+  });
 
   useEffect(() => {
     // db.collection("コレクション名")で、firebase.ts / .envで指定したfirebaseプロジェクトのDB内コレクションにアクセスできる。
@@ -48,6 +60,19 @@ const App: React.FC = () => {
   return (
     <div className={styles.app__root}>
       <h1>Todo App by React/Firebase</h1>
+      <button className={styles.app__logout}
+      onClick={
+        async () => {
+          try {
+            await auth.signOut();
+            props.history.push("/login");
+          } catch (error: any) {
+            alert(error.message);
+          }
+        }}
+        >
+          <ExitToAppIcon/>
+        </button>
       <br/>
       <FormControl>
         <TextField
@@ -70,7 +95,7 @@ const App: React.FC = () => {
       <List className={classes.list}>
         {tasks.map((task) => (
           <TaskItem key={task.id} id={task.id} title={task.title} />
-        ))};
+        ))}
       </List>
 
     </div>
